@@ -58,4 +58,54 @@ public class Loki {
             }
         }
     }
+
+    /// Log a debug message.
+    public static func debug(_ msg: String,
+                             functionName: String = #function,
+                             lineNum: Int = #line,
+                             filePath: String = #file)
+    {
+        Loki.log(.debug, msg, functionName: functionName,
+                 lineNum: lineNum, filePath: filePath)
+    }
+
+    /// Log a verbose message.
+    public static func verbose(_ msg: String,
+                               functionName: String = #function,
+                               lineNum: Int = #line,
+                               filePath: String = #file)
+    {
+        Loki.log(.verbose, msg, functionName: functionName,
+                 lineNum: lineNum, filePath: filePath)
+    }
+
+    /// Log an informational message.
+    public static func info(_ msg: String,
+                           functionName: String = #function,
+                           lineNum: Int = #line,
+                           filePath: String = #file)
+    {
+        Loki.log(.info, msg, functionName: functionName,
+                 lineNum: lineNum, filePath: filePath)
+    }
+
+    /// Log a warning message.
+    public static func warn(_ msg: String,
+                            functionName: String = #function,
+                            lineNum: Int = #line,
+                            filePath: String = #file)
+    {
+        Loki.log(.warn, msg, functionName: functionName,
+                 lineNum: lineNum, filePath: filePath)
+    }
+
+    /// Log an error message.
+    public static func error(_ msg: String,
+                             functionName: String = #function,
+                             lineNum: Int = #line,
+                             filePath: String = #file)
+    {
+        Loki.log(.error, msg, functionName: functionName,
+                 lineNum: lineNum, filePath: filePath)
+    }
 }

@@ -10,7 +10,7 @@ public enum LogLevel: UInt8 {
     /// Log message type for logging an informational message
     case info = 3
     /// Log message type for logging a warning message
-    case warning = 4
+    case warn = 4
     /// Log message type for logging an error message
     case error = 5
     /// Disable logging
@@ -27,8 +27,8 @@ extension LogLevel: CustomStringConvertible {
                 return "VERBOSE"
             case .info:
                 return "INFO"
-            case .warning:
-                return "WARNING"
+            case .warn:
+                return "WARN"
             case .error:
                 return "ERROR"
             case .none:
