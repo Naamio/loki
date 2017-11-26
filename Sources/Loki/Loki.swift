@@ -4,12 +4,12 @@ import Foundation
 /// The public logging API to be used by outsiders.
 public class Loki {
     /// Default formatter.
-    static var dateFormatter = Loki.getDateFormatter()
+    public static var dateFormatter = Loki.getDateFormatter()
     /// Backends used by the logger
-    static var backends = [LokiBackend]()
+    public static var backends = [LokiBackend]()
     /// Level of logging output.
     public static var logLevel = LogLevel.info
-    /// Whether async logging is enabled
+    /// Dispatch queue to which logging should be done async
     public static var dispatchQueue: DispatchQueue?
 
     static func getDateFormatter() -> DateFormatter {
@@ -45,16 +45,18 @@ public class Loki {
 
         let date = dateFormatter.string(from: Date())
         let path = NSURL(fileURLWithPath: filePath).lastPathComponent!
-        let message = "[\(date)] [\(level)] [\(path):\(lineNum) \(functionName)] \(msg)"
+        let log = LogMessage(date: date, level: level.description, text: msg,
+                             path: path, line: lineNum, function: functionName)
+
         if let queue = Loki.dispatchQueue {
             queue.async {
                 for backend in Loki.backends {
-                    backend.writeLog(message)
+                    backend.writeLog(log)
                 }
             }
         } else {
             for backend in Loki.backends {
-                backend.writeLog(message)
+                backend.writeLog(log)
             }
         }
     }

@@ -8,8 +8,8 @@ class StringBackend {
 }
 
 extension StringBackend: LokiBackend {
-    public func writeLog(_ text: String) {
-        self.string += text
+    public func writeLog(_ logData: LogMessage) {
+        self.string += logData.toString()
     }
 }
 

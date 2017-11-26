@@ -10,12 +10,12 @@ let package = Package(
             targets: ["Loki"]),
     ],
     dependencies: [
-        //
+        .package(url: "https://github.com/IBM-Swift/SwiftyRequest.git", from: "1.0.0"),
     ],
     targets: [
         .target(
             name: "Loki",
-            dependencies: []),
+            dependencies: ["SwiftyRequest"]),
         .testTarget(
             name: "LokiTests",
             dependencies: ["Loki"]),
