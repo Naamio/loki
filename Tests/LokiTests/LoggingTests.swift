@@ -23,6 +23,9 @@ class LoggingTests: XCTestCase {
 
     static var allTests = [
         ("testNormalLog", testNormalLog),
+        ("testMultipleBackends", testMultipleBackends),
+        ("testLevelMismatch", testLevelMismatch),
+        ("testNoBackends", testNoBackends),
     ]
 
     func testNormalLog() {
@@ -32,12 +35,55 @@ class LoggingTests: XCTestCase {
         let formatter = getDateFormatter()
         Loki.dateFormatter = formatter
         Loki.addBackend(backend)
-        Loki.log(.info, "Hi")       // This affects line number
-        logWritten.fulfill()
-
+        Loki.log(.info, "Hi")       // NOTE: This affects line number
+        let line = #line
         let date = formatter.string(from: Date())
         XCTAssertEqual(backend.string,
-                       "[\(date)] [INFO] [LoggingTests.swift:35 testNormalLog()] Hi")
+                       "[\(date)] [INFO] [LoggingTests.swift:\(line - 1) testNormalLog()] Hi")
+        logWritten.fulfill()
+
+        waitForExpectations(timeout: 2) { error in
+            XCTAssertNil(error)
+        }
+    }
+
+    func testMultipleBackends() {
+        let log1Written = expectation(description: "log written to string 1")
+        let log2Written = expectation(description: "log written to string 2")
+        let backend1 = StringBackend()
+        let backend2 = StringBackend()
+
+        let formatter = getDateFormatter()
+        Loki.dateFormatter = formatter
+        Loki.addBackend(backend1)
+        Loki.addBackend(backend2)
+        Loki.log(.info, "Hi")       // NOTE: This affects line number
+        let line = #line
+
+        let date = formatter.string(from: Date())
+        let finalString = "[\(date)] [INFO] [LoggingTests.swift:\(line - 1) testMultipleBackends()] Hi"
+        XCTAssertEqual(backend1.string, finalString)
+        log1Written.fulfill()
+        XCTAssertEqual(backend1.string, finalString)
+        log2Written.fulfill()
+
+        waitForExpectations(timeout: 2) { error in
+            XCTAssertNil(error)
+        }
+    }
+
+    func testNoBackends() {
+        XCTAssertFalse(Loki.isLogging(.info))
+    }
+
+    func testLevelMismatch() {
+        let logFail = expectation(description: "log not written")
+        let backend = StringBackend()
+        Loki.addBackend(backend)
+        Loki.logLevel = .error
+        Loki.log(.info, "Hi")
+        XCTAssertEqual(backend.string, "")
+        logFail.fulfill()
 
         waitForExpectations(timeout: 2) { error in
             XCTAssertNil(error)
