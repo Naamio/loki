@@ -13,6 +13,8 @@ public enum LogLevel: UInt8 {
     case warning = 4
     /// Log message type for logging an error message
     case error = 5
+    /// Disable logging
+    case none = 6
 }
 
 /// Convert the level into a printable format.
@@ -29,6 +31,8 @@ extension LogLevel: CustomStringConvertible {
                 return "WARNING"
             case .error:
                 return "ERROR"
+            case .none:
+                return ""
         }
     }
 }

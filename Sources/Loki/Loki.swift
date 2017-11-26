@@ -26,7 +26,7 @@ public class Loki {
     /// Check whether we're logging the given level
     /// (also checks whether we have any available backends).
     public static func isLogging(_ level: LogLevel) -> Bool {
-        if Loki.backends.isEmpty {
+        if Loki.backends.isEmpty || Loki.logLevel == .none {
             return false
         }
 

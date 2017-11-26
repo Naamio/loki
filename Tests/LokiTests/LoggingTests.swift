@@ -26,6 +26,7 @@ class LoggingTests: XCTestCase {
         ("testMultipleBackends", testMultipleBackends),
         ("testLevelMismatch", testLevelMismatch),
         ("testNoBackends", testNoBackends),
+        ("testDisable", testDisable),
     ]
 
     override func setUp() {
@@ -83,6 +84,20 @@ class LoggingTests: XCTestCase {
 
     func testNoBackends() {
         XCTAssertFalse(Loki.isLogging(.info))
+    }
+
+    func testDisable() {
+        let logFail = expectation(description: "log not written")
+        let backend = StringBackend()
+        Loki.addBackend(backend)
+        Loki.logLevel = .none
+        Loki.log(.info, "Hi")
+        XCTAssertEqual(backend.string, "")
+        logFail.fulfill()
+
+        waitForExpectations(timeout: 2) { error in
+            XCTAssertNil(error)
+        }
     }
 
     func testLevelMismatch() {
