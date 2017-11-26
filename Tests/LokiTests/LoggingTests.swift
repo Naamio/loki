@@ -28,6 +28,15 @@ class LoggingTests: XCTestCase {
         ("testNoBackends", testNoBackends),
     ]
 
+    override func setUp() {
+        Loki.backends = []
+        super.setUp()
+    }
+
+    override func tearDown() {
+        super.tearDown()
+    }
+
     func testNormalLog() {
         let logWritten = expectation(description: "log written to string")
         let backend = StringBackend()
@@ -78,12 +87,24 @@ class LoggingTests: XCTestCase {
 
     func testLevelMismatch() {
         let logFail = expectation(description: "log not written")
+        let logWritten = expectation(description: "log written")
         let backend = StringBackend()
         Loki.addBackend(backend)
         Loki.logLevel = .error
         Loki.log(.info, "Hi")
         XCTAssertEqual(backend.string, "")
         logFail.fulfill()
+
+        let formatter = getDateFormatter()
+        Loki.dateFormatter = formatter
+        Loki.logLevel = .debug
+        Loki.log(.verbose, "Hello")
+        let line = #line
+
+        let date = formatter.string(from: Date())
+        let finalString = "[\(date)] [VERBOSE] [LoggingTests.swift:\(line - 1) testLevelMismatch()] Hello"
+        XCTAssertEqual(backend.string, finalString)
+        logWritten.fulfill()
 
         waitForExpectations(timeout: 2) { error in
             XCTAssertNil(error)

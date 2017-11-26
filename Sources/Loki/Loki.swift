@@ -30,7 +30,7 @@ public class Loki {
             return false
         }
 
-        return Loki.logLevel == level
+        return Loki.logLevel.rawValue <= level.rawValue
     }
 
     /// Generic logging function.
