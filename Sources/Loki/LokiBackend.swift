@@ -6,6 +6,7 @@ public protocol LokiBackend {
     func writeLog(_ logData: LogMessage)
 }
 
+/// Console backend for logging messages in stdout
 public class ConsoleBackend {
     public init() {}
 }
@@ -16,6 +17,7 @@ extension ConsoleBackend: LokiBackend {
     }
 }
 
+/// HTTP backend for sending messages to another server.
 public class HttpBackend {
     let hostUrl: String
     public var hostAuth: String? = nil

@@ -1,4 +1,7 @@
 import Loki
 
-Loki.addBackend(ConsoleBackend())
-LokiCollector.start(listenPort: 8000, authorize: true)
+let consoleBackend = ConsoleBackend()
+Loki.addBackend(consoleBackend)     // add backend for collector's internal logging
+
+LokiCollector.addBackend(consoleBackend)    // add backend for collector itself
+LokiCollector.start(listenPort: 8000)

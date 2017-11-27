@@ -19,10 +19,10 @@ let package = Package(
     targets: [
         .target(
             name: "Loki",
-            dependencies: ["SwiftyRequest"]),
+            dependencies: ["SwiftyRequest", "Kitura"]),
         .target(
             name: "LokiCollector",
-            dependencies: ["Kitura", "Loki"]),
+            dependencies: ["Loki"]),
         .testTarget(
             name: "LokiTests",
             dependencies: ["Loki"]),
