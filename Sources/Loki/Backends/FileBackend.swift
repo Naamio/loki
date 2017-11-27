@@ -17,9 +17,17 @@ public class FileBackend {
 extension FileBackend: LokiBackend {
     public func writeLog(_ logData: LogMessage) {
         let log = logData.toString() + "\n"
-        if let data = log.data(using: .utf8) {
+        if var data = log.data(using: .utf8) {
             do {
-                try data.write(to: url)
+                if let fileHandle = FileHandle(forWritingAtPath: url.path) {
+                    defer {
+                        fileHandle.closeFile()
+                    }
+                    fileHandle.seekToEndOfFile()
+                    fileHandle.write(data)
+                } else {
+                    try data.write(to: url, options: .atomic)
+                }
             } catch {
                 // FIXME: handle write error?
             }
