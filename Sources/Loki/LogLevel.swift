@@ -15,6 +15,25 @@ public enum LogLevel: UInt8 {
     case error = 5
     /// Disable logging
     case none = 6
+
+    public init?(_ string: String) {
+        switch string {
+            case "DEBUG":
+                self = .debug
+            case "VERBOSE":
+                self = .verbose
+            case "INFO":
+                self = .info
+            case "WARN":
+                self = .warn
+            case "ERROR":
+                self = .error
+            case "NONE":
+                self = .none
+            default:
+                return nil
+        }
+    }
 }
 
 /// Convert the level into a printable format.
