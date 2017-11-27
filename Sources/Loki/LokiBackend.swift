@@ -6,7 +6,9 @@ public protocol LokiBackend {
     func writeLog(_ logData: LogMessage)
 }
 
-public class ConsoleBackend {}
+public class ConsoleBackend {
+    public init() {}
+}
 
 extension ConsoleBackend: LokiBackend {
     public func writeLog(_ logData: LogMessage) {
