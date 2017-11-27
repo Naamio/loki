@@ -19,6 +19,7 @@ public class Loki {
         return formatter
     }
 
+    /// Add a configured backend to this logger.
     public static func addBackend(_ backend: LokiBackend) {
         Loki.backends.append(backend)
     }
