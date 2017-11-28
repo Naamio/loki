@@ -25,6 +25,7 @@ class HttpBackendTests: XCTestCase {
     ]
 
     override func setUp() {
+        Loki.appName = ""
         Loki.backends = []
         LokiCollector.backends = []
         super.setUp()
@@ -42,6 +43,7 @@ class HttpBackendTests: XCTestCase {
 
         let logReceived = expectation(description: "server received log")
         let backend = TestBackend(callback: { logData in
+            XCTAssertEqual(logData.app, "testApp")
             XCTAssertEqual(logData.text, "Booya")
             XCTAssertEqual(logData.level, "INFO")
             XCTAssertEqual(logData.function, "testNormalLog()")
@@ -50,6 +52,7 @@ class HttpBackendTests: XCTestCase {
         })
 
         LokiCollector.addBackend(backend)
+        Loki.appName = "testApp"
         Loki.addBackend(HttpBackend(url: "http://0.0.0.0:8000/"))
         Loki.logLevel = .info
         Loki.info("Booya")
@@ -89,7 +92,7 @@ class HttpBackendTests: XCTestCase {
 
         let requestRejected = expectation(description: "Request rejected")
         let request = RestRequest(method: .post, url: "http://0.0.0.0:8000/")
-        let logData = LogMessage(date: "", level: "", text: "", path: "", line: 0, function: "")
+        let logData = LogMessage(app: "", date: "", level: "", text: "", path: "", line: 0, function: "")
         let jsonData = try! JSONEncoder().encode(logData)
         request.messageBody = jsonData
 

@@ -41,7 +41,7 @@ class FileBackendTests: XCTestCase {
         let date = formatter.string(from: Date())
         let contents = try! String(contentsOf: file.url, encoding: .utf8)
         XCTAssertEqual(contents,
-                       "[\(date)] [INFO] [FileBackendTests.swift:\(line - 1) testNormalLog()] Hi\n")
+                       "[\(date)] [INFO] [:FileBackendTests.swift:\(line - 1) testNormalLog()] Hi\n")
         logWritten.fulfill()
         try! fileManager.removeItem(at: file.url)
 
@@ -69,8 +69,8 @@ class FileBackendTests: XCTestCase {
         let contents = try! String(contentsOf: file.url, encoding: .utf8)
 
         let expected = """
-[\(date)] [INFO] [FileBackendTests.swift:\(line - 1) testMultipleLogs()] Hi
-[\(date)] [ERROR] [FileBackendTests.swift:\(line + 1) testMultipleLogs()] Hello
+[\(date)] [INFO] [:FileBackendTests.swift:\(line - 1) testMultipleLogs()] Hi
+[\(date)] [ERROR] [:FileBackendTests.swift:\(line + 1) testMultipleLogs()] Hello
 
 """
         XCTAssertEqual(contents, expected)

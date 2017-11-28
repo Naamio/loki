@@ -31,6 +31,7 @@ class LoggingTests: XCTestCase {
     ]
 
     override func setUp() {
+        Loki.appName = ""
         Loki.backends = []
         super.setUp()
     }
@@ -44,13 +45,14 @@ class LoggingTests: XCTestCase {
         let backend = StringBackend()
 
         let formatter = getDateFormatter()
+        Loki.appName = "testApp"
         Loki.dateFormatter = formatter
         Loki.addBackend(backend)
         Loki.warn("Hi")
         let line = #line
         let date = formatter.string(from: Date())
         XCTAssertEqual(backend.string,
-                       "[\(date)] [WARN] [LoggingTests.swift:\(line - 1) testNormalLog()] Hi")
+                       "[\(date)] [WARN] [testApp:LoggingTests.swift:\(line - 1) testNormalLog()] Hi")
         logWritten.fulfill()
 
         waitForExpectations(timeout: 2) { error in
@@ -72,7 +74,7 @@ class LoggingTests: XCTestCase {
         let line = #line
 
         let date = formatter.string(from: Date())
-        let finalString = "[\(date)] [ERROR] [LoggingTests.swift:\(line - 1) testMultipleBackends()] Hi"
+        let finalString = "[\(date)] [ERROR] [:LoggingTests.swift:\(line - 1) testMultipleBackends()] Hi"
         XCTAssertEqual(backend1.string, finalString)
         log1Written.fulfill()
         XCTAssertEqual(backend1.string, finalString)
@@ -118,7 +120,7 @@ class LoggingTests: XCTestCase {
         let line = #line
 
         let date = formatter.string(from: Date())
-        let finalString = "[\(date)] [VERBOSE] [LoggingTests.swift:\(line - 1) testLevelMismatch()] Hello"
+        let finalString = "[\(date)] [VERBOSE] [:LoggingTests.swift:\(line - 1) testLevelMismatch()] Hello"
         XCTAssertEqual(backend.string, finalString)
         logWritten.fulfill()
 
@@ -142,7 +144,7 @@ class LoggingTests: XCTestCase {
 
                 if level.rawValue <= sublevel.rawValue {
                     let date = formatter.string(from: Date())
-                    let finalString = "[\(date)] [\(sublevel)] [LoggingTests.swift:\(line - 1) testSubLevels()] Hi"
+                    let finalString = "[\(date)] [\(sublevel)] [:LoggingTests.swift:\(line - 1) testSubLevels()] Hi"
                     XCTAssertEqual(backend.string, finalString)
                 } else {
                     XCTAssertEqual(backend.string, "")

@@ -1,4 +1,5 @@
 public struct LogMessage: Codable {
+    public let app: String
     public let date: String
     public let level: String
     public let text: String
@@ -9,6 +10,6 @@ public struct LogMessage: Codable {
 
 extension LogMessage {
     public func toString() -> String {
-        return "[\(date)] [\(level)] [\(path):\(line) \(function)] \(text)"
+        return "[\(date)] [\(level)] [\(app):\(path):\(line) \(function)] \(text)"
     }
 }

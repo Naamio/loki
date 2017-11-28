@@ -11,6 +11,8 @@ public class Loki {
     public static var logLevel = LogLevel.info
     /// Dispatch queue to which logging should be done async
     public static var dispatchQueue: DispatchQueue?
+    /// Name of the app.
+    public static var appName: String = ""
 
     static func getDateFormatter() -> DateFormatter {
         /// Default ISO datetime formatting.
@@ -46,8 +48,8 @@ public class Loki {
 
         let date = dateFormatter.string(from: Date())
         let path = NSURL(fileURLWithPath: filePath).lastPathComponent!
-        let log = LogMessage(date: date, level: level.description, text: msg,
-                             path: path, line: lineNum, function: functionName)
+        let log = LogMessage(app: appName, date: date, level: level.description,
+                             text: msg, path: path, line: lineNum, function: functionName)
 
         if let queue = Loki.dispatchQueue {
             queue.async {
