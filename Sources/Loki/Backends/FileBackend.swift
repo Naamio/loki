@@ -6,7 +6,8 @@ public class FileBackend {
 
     public init?(inPath: String) {
         let fileManager = FileManager()
-        if fileManager.createFile(atPath: inPath, contents: nil) {
+        if fileManager.createFile(atPath: inPath, contents: nil) &&
+           fileManager.isWritableFile(atPath: inPath) {
             url = URL(fileURLWithPath: inPath)
         } else {
             return nil

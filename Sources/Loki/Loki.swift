@@ -12,7 +12,7 @@ public class Loki {
     /// Dispatch queue to which logging should be done async
     public static var dispatchQueue: DispatchQueue?
     /// Name of the app.
-    public static var appName: String = ""
+    public static var sourceName: String = ""
 
     static func getDateFormatter() -> DateFormatter {
         /// Default ISO datetime formatting.
@@ -36,21 +36,9 @@ public class Loki {
         return Loki.logLevel.rawValue <= level.rawValue
     }
 
-    /// Generic logging function.
-    public static func log(_ level: LogLevel, _ msg: String,
-                           functionName: String = #function,
-                           lineNum: Int = #line,
-                           filePath: String = #file)
-    {
-        if !Loki.isLogging(level) {
-            return
-        }
-
-        let date = dateFormatter.string(from: Date())
-        let path = NSURL(fileURLWithPath: filePath).lastPathComponent!
-        let log = LogMessage(app: appName, date: date, level: level.description,
-                             text: msg, path: path, line: lineNum, function: functionName)
-
+    /// Pass the log message unit to the configured backends.
+    /// (also takes care of async logging)
+    public static func logToBackend(_ log: LogMessage) {
         if let queue = Loki.dispatchQueue {
             queue.async {
                 for backend in Loki.backends {
@@ -62,6 +50,23 @@ public class Loki {
                 backend.writeLog(log)
             }
         }
+    }
+
+    /// Generic logging function.
+    public static func log(_ level: LogLevel, _ msg: String,
+                           functionName: String = #function,
+                           lineNum: Int = #line,
+                           filePath: String = #file)
+    {
+        if !Loki.isLogging(level) {
+            return
+        }
+
+        let date = dateFormatter.string(from: Date())
+        let fileName = NSURL(fileURLWithPath: filePath).lastPathComponent!
+        let log = LogMessage(source: sourceName, date: date, level: level, text: msg,
+                             fileName: fileName, line: lineNum, function: functionName)
+        Loki.logToBackend(log)
     }
 
     /// Log a debug message.

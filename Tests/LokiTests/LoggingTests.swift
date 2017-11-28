@@ -31,7 +31,7 @@ class LoggingTests: XCTestCase {
     ]
 
     override func setUp() {
-        Loki.appName = ""
+        Loki.sourceName = ""
         Loki.backends = []
         super.setUp()
     }
@@ -45,7 +45,7 @@ class LoggingTests: XCTestCase {
         let backend = StringBackend()
 
         let formatter = getDateFormatter()
-        Loki.appName = "testApp"
+        Loki.sourceName = "testApp"
         Loki.dateFormatter = formatter
         Loki.addBackend(backend)
         Loki.warn("Hi")

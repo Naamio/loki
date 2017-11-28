@@ -2,10 +2,10 @@ FROM ibmcom/swift-ubuntu-runtime:4.0
 
 ADD .build/release/ /usr/share/loki/
 
-ENV PORT=8000
+ENV LOKI_SERVICE_PORT=8000
 ENV LOG=INFO
 
-EXPOSE ${PORT}
+EXPOSE ${LOKI_SERVICE_PORT}
 
 WORKDIR /usr/share/loki/
 

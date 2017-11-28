@@ -2,7 +2,7 @@ import Foundation
 
 /// Based on the LoggerAPI implementation -
 /// https://github.com/IBM-Swift/LoggerAPI/blob/c56c3de778680dc0cc30443cde8a211f0fd0c754/Sources/LoggerAPI/Logger.swift#L20
-public enum LogLevel: UInt8 {
+public enum LogLevel: UInt8, Codable {
     /// Log message type for logging a debugging message
     case debug = 1
     /// Log message type for logging messages in verbose mode
