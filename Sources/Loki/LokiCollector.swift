@@ -4,16 +4,6 @@ import Kitura
 
 /// HTTP backend for collecting logs sent by different services.
 public class LokiCollector {
-    public static var dispatchQueue: DispatchQueue?
-
-    /// Collector's backends for writing logs
-    public static var backends = [LokiBackend]()
-
-    /// Add a new Loki backend.
-    public static func addBackend(_ backend: LokiBackend) {
-        LokiCollector.backends.append(backend)
-    }
-
     /// Initialize routes for the collector. It accepts POST data
     /// to any route. If we specify an authorization token, then it'll
     /// check the `Bearer` token in incoming requests against the given token.
@@ -27,7 +17,7 @@ public class LokiCollector {
                 if authToken == header[idx...] {
                     next()
                 } else {
-                    Loki.info("Authorization failed")
+                    Loki.debug("Authorization failed for request.")
                     response.statusCode = .unauthorized
                     try response.end()
                 }
@@ -37,23 +27,17 @@ public class LokiCollector {
         router.post("/*") { request, response, next in
             do {
                 let logData = try request.read(as: LogMessage.self)
-                if let queue = LokiCollector.dispatchQueue {
-                    queue.async {
-                        for backend in LokiCollector.backends {
-                            backend.writeLog(logData)
-                        }
-                    }
-                } else {
-                    for backend in LokiCollector.backends {
-                        backend.writeLog(logData)
-                    }
+                if Loki.isLogging(logData.level) {
+                    Loki.logToBackend(logData)
                 }
 
                 response.statusCode = .OK
-            } catch let err {
-                Loki.error("Cannot obtain log message from request: \(err)")
+            } catch {
+                Loki.debug("Invalid payload for request.")
                 response.statusCode = .badRequest
             }
+
+            try response.end()
         }
 
         return router
