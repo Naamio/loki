@@ -4,6 +4,7 @@ import SwiftyRequest
 import XCTest
 
 @testable import Loki
+@testable import LokiCollector
 
 class TestBackend: LokiBackend {
     let callback: (LogMessage) -> Void
@@ -21,7 +22,7 @@ class HttpBackendTests: XCTestCase {
     static var allTests = [
         ("testServerLogging", testServerLogging),
         ("testClientLogging", testClientLogging),
-        ("testServerAuthorization", testServerAuthorization),
+        //("testServerAuthorization", testServerAuthorization),
         ("testClientAuthorization", testClientAuthorization),
         ("testUnauthorized", testUnauthorized),
     ]

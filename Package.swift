@@ -6,8 +6,8 @@ let package = Package(
     name: "Loki",
     products: [
         .executable(
-            name: "LokiCollector",
-            targets: ["LokiCollector"]),
+            name: "LokiDaemon",
+            targets: ["LokiDaemon"]),
         .library(
             name: "Loki",
             targets: ["Loki"]),
@@ -22,9 +22,13 @@ let package = Package(
             dependencies: ["SwiftyRequest", "Kitura"]),
         .target(
             name: "LokiCollector",
-            dependencies: ["Loki"]),
+            dependencies: ["Loki"]
+        ),
+        .target(
+            name: "LokiDaemon",
+            dependencies: ["LokiCollector"]),
         .testTarget(
             name: "LokiTests",
-            dependencies: ["Loki"]),
+            dependencies: ["Loki", "LokiCollector"]),
     ]
 )

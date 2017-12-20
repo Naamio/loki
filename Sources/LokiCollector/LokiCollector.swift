@@ -2,6 +2,8 @@ import Dispatch
 import Foundation
 import Kitura
 
+import Loki
+
 /// HTTP backend for collecting logs sent by different services.
 public class LokiCollector {
     /// Initialize routes for the collector. It accepts POST data

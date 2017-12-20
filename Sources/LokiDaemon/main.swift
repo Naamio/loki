@@ -1,6 +1,8 @@
 import Dispatch
 import Foundation
+
 import Loki
+import LokiCollector
 
 func getEnvVariable(_ variable: String) -> String? {
     return ProcessInfo.processInfo.environment[variable]
