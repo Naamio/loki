@@ -5,6 +5,7 @@ import XCTest
 
 @testable import Loki
 @testable import LokiCollector
+@testable import LokiHttp
 
 class TestBackend: LokiBackend {
     let callback: (LogMessage) -> Void

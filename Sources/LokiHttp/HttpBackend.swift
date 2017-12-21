@@ -1,6 +1,8 @@
 import Foundation
 import SwiftyRequest
 
+import Loki
+
 /// HTTP backend for sending messages to another server.
 public class HttpBackend {
     let hostUrl: String

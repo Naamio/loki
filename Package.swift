@@ -11,6 +11,9 @@ let package = Package(
         .library(
             name: "Loki",
             targets: ["Loki"]),
+        .library(
+            name: "LokiHttp",
+            targets: ["LokiHttp"]),
     ],
     dependencies: [
         .package(url: "https://github.com/IBM-Swift/Kitura.git", from: "2.0.0"),
@@ -19,10 +22,13 @@ let package = Package(
     targets: [
         .target(
             name: "Loki",
-            dependencies: ["SwiftyRequest", "Kitura"]),
+            dependencies: []),
+        .target(
+            name: "LokiHttp",
+            dependencies: ["Loki", "SwiftyRequest", "Kitura"]),
         .target(
             name: "LokiCollector",
-            dependencies: ["Loki"]
+            dependencies: ["Loki", "LokiHttp"]
         ),
         .target(
             name: "LokiDaemon",
