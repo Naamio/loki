@@ -7,7 +7,7 @@ import XCTest
 @testable import LokiCollector
 @testable import LokiHttp
 
-class TestBackend: LokiBackend {
+class TestDestination: BaseDestination {
     let callback: (LogMessage) -> Void
 
     init(callback: @escaping (LogMessage) -> Void) {
@@ -19,7 +19,7 @@ class TestBackend: LokiBackend {
     }
 }
 
-class HttpBackendTests: XCTestCase {
+class HttpDestinationTests: XCTestCase {
     static var allTests = [
         ("testServerLogging", testServerLogging),
         ("testClientLogging", testClientLogging),
@@ -30,7 +30,7 @@ class HttpBackendTests: XCTestCase {
 
     override func setUp() {
         Loki.sourceName = ""
-        Loki.backends = []
+        Loki.destinations = []
         Loki.logLevel = .info
         super.setUp()
     }
@@ -61,7 +61,7 @@ class HttpBackendTests: XCTestCase {
         Kitura.start()
 
         let logReceived = expectation(description: "server received log")
-        let backend = TestBackend(callback: { logData in
+        let destination = TestDestination(callback: { logData in
             XCTAssertEqual(logData.source, "testApp")
             XCTAssertEqual(logData.text, "Booya")
             XCTAssertEqual(logData.level, .info)
@@ -70,7 +70,7 @@ class HttpBackendTests: XCTestCase {
             logReceived.fulfill()
         })
 
-        Loki.addBackend(backend)
+        Loki.addDestination(destination)
         let logData = LogMessage(source: "testApp", date: "", level: .info, text: "Booya",
                                  fileName: "someFile.swift", line: 0, function: "someFunc()")
         let request = prepareRequestForLog(logData)
@@ -97,8 +97,8 @@ class HttpBackendTests: XCTestCase {
         Kitura.addHTTPServer(onPort: 8000, with: router)
         Kitura.start()
 
-        let httpClient = HttpBackend(url: "http://0.0.0.0:8000")
-        Loki.addBackend(httpClient)
+        let httpClient = HttpDestination(url: "http://0.0.0.0:8000")
+        Loki.addDestination(httpClient)
         Loki.info("Hola!")
 
         waitForExpectations(timeout: 3) { error in
@@ -112,12 +112,12 @@ class HttpBackendTests: XCTestCase {
         Kitura.start()
 
         let logReceived = expectation(description: "server received log")
-        let backend = TestBackend(callback: { logData in
+        let destination = TestDestination(callback: { logData in
             XCTAssertEqual(logData.text, "Booya")
             logReceived.fulfill()
         })
 
-        Loki.addBackend(backend)
+        Loki.addDestination(destination)
 
         let logData = LogMessage(source: "", date: "", level: .info, text: "Booya",
                                  fileName: "", line: 0, function: "")
@@ -146,9 +146,9 @@ class HttpBackendTests: XCTestCase {
         Kitura.addHTTPServer(onPort: 8000, with: router)
         Kitura.start()
 
-        let httpClient = HttpBackend(url: "http://0.0.0.0:8000")
+        let httpClient = HttpDestination(url: "http://0.0.0.0:8000")
         httpClient.hostAuth = "foobar"
-        Loki.addBackend(httpClient)
+        Loki.addDestination(httpClient)
         Loki.info("Boo!")
 
         waitForExpectations(timeout: 3) { error in

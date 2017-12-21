@@ -3,8 +3,8 @@ import SwiftyRequest
 
 import Loki
 
-/// HTTP backend for sending messages to another server.
-public class HttpBackend {
+/// HTTP destination for sending messages to another server.
+public class HttpDestination {
     let hostUrl: String
     public var hostAuth: String? = nil
 
@@ -13,7 +13,7 @@ public class HttpBackend {
     }
 }
 
-extension HttpBackend: LokiBackend {
+extension HttpDestination: BaseDestination {
     public func writeLog(_ logData: LogMessage) {
         let request = RestRequest(method: .post, url: hostUrl)
         let jsonData = try! JSONEncoder().encode(logData)

@@ -1,4 +1,4 @@
-/// A single log unit passed to any logging backend.
+/// A single log unit passed to any logging destination.
 public struct LogMessage: Codable {
     /// The source from which this log originated (manually set by the user).
     public let source: String

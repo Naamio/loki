@@ -1,9 +1,9 @@
-/// Console backend for logging messages in stdout
-public class ConsoleBackend {
+/// Console destination for logging messages in stdout
+public class ConsoleDestination {
     public init() {}
 }
 
-extension ConsoleBackend: LokiBackend {
+extension ConsoleDestination: BaseDestination {
     public func writeLog(_ logData: LogMessage) {
         print("\(logData.toString())")
     }

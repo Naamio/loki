@@ -4,7 +4,7 @@ import Kitura
 
 import Loki
 
-/// HTTP backend for collecting logs sent by different services.
+/// HTTP destination for collecting logs sent by different services.
 public class LokiCollector {
     /// Initialize routes for the collector. It accepts POST data
     /// to any route. If we specify an authorization token, then it'll
