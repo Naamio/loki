@@ -1,7 +1,7 @@
 import Foundation
 
-/// File backend for logging at the given path.
-public class FileBackend {
+/// File destination for logging at the given path.
+public class FileDestination {
     let url: URL
 
     public init?(inPath: String) {
@@ -15,7 +15,7 @@ public class FileBackend {
     }
 }
 
-extension FileBackend: LokiBackend {
+extension FileDestination: BaseDestination {
     public func writeLog(_ logData: LogMessage) {
         let log = logData.toString() + "\n"
         if var data = log.data(using: .utf8) {

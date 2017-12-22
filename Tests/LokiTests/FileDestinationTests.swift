@@ -3,7 +3,7 @@ import XCTest
 
 @testable import Loki
 
-class FileBackendTests: XCTestCase {
+class FileDestinationTests: XCTestCase {
     let fileManager = FileManager()
 
     static var allTests = [
@@ -20,7 +20,7 @@ class FileBackendTests: XCTestCase {
     }
 
     override func setUp() {
-        Loki.backends = []
+        Loki.destinations = []
         super.setUp()
     }
 
@@ -29,19 +29,19 @@ class FileBackendTests: XCTestCase {
     }
 
     func testNormalLog() {
-        let file = FileBackend(inPath: "foo.log")!
+        let file = FileDestination(inPath: "foo.log")!
         let logWritten = expectation(description: "log written to file")
         let formatter = getDateFormatter()
 
         Loki.dateFormatter = formatter
-        Loki.addBackend(file)
+        Loki.addDestination(file)
         Loki.logLevel = .info
         Loki.info("Hi")
         let line = #line
         let date = formatter.string(from: Date())
         let contents = try! String(contentsOf: file.url, encoding: .utf8)
         XCTAssertEqual(contents,
-                       "[\(date)] [INFO] [:FileBackendTests.swift:\(line - 1) testNormalLog()] Hi\n")
+                       "[\(date)] [INFO] [:FileDestinationTests.swift:\(line - 1) testNormalLog()] Hi\n")
         logWritten.fulfill()
         try! fileManager.removeItem(at: file.url)
 
@@ -51,16 +51,16 @@ class FileBackendTests: XCTestCase {
     }
 
     func testFileCreation() {
-        let file = FileBackend(inPath: "foo.log")!
+        let file = FileDestination(inPath: "foo.log")!
         XCTAssertTrue(fileManager.fileExists(atPath: "foo.log"))
         try! fileManager.removeItem(at: file.url)
     }
 
     func testMultipleLogs() {
-        let file = FileBackend(inPath: "foo.log")!
+        let file = FileDestination(inPath: "foo.log")!
         let formatter = getDateFormatter()
         Loki.dateFormatter = formatter
-        Loki.addBackend(file)
+        Loki.addDestination(file)
         Loki.logLevel = .info
         Loki.info("Hi")
         let line = #line
@@ -69,8 +69,8 @@ class FileBackendTests: XCTestCase {
         let contents = try! String(contentsOf: file.url, encoding: .utf8)
 
         let expected = """
-[\(date)] [INFO] [:FileBackendTests.swift:\(line - 1) testMultipleLogs()] Hi
-[\(date)] [ERROR] [:FileBackendTests.swift:\(line + 1) testMultipleLogs()] Hello
+[\(date)] [INFO] [:FileDestinationTests.swift:\(line - 1) testMultipleLogs()] Hi
+[\(date)] [ERROR] [:FileDestinationTests.swift:\(line + 1) testMultipleLogs()] Hello
 
 """
         XCTAssertEqual(contents, expected)

@@ -3,11 +3,11 @@ import XCTest
 
 @testable import Loki
 
-class StringBackend {
+class StringDestination {
     var string = ""
 }
 
-extension StringBackend: LokiBackend {
+extension StringDestination: BaseDestination {
     public func writeLog(_ logData: LogMessage) {
         self.string += logData.toString()
     }
@@ -32,7 +32,7 @@ class LoggingTests: XCTestCase {
 
     override func setUp() {
         Loki.sourceName = ""
-        Loki.backends = []
+        Loki.destinations = []
         super.setUp()
     }
 
@@ -42,16 +42,16 @@ class LoggingTests: XCTestCase {
 
     func testNormalLog() {
         let logWritten = expectation(description: "log written to string")
-        let backend = StringBackend()
+        let destination = StringDestination()
 
         let formatter = getDateFormatter()
         Loki.sourceName = "testApp"
         Loki.dateFormatter = formatter
-        Loki.addBackend(backend)
+        Loki.addDestination(destination)
         Loki.warn("Hi")
         let line = #line
         let date = formatter.string(from: Date())
-        XCTAssertEqual(backend.string,
+        XCTAssertEqual(destination.string,
                        "[\(date)] [WARN] [testApp:LoggingTests.swift:\(line - 1) testNormalLog()] Hi")
         logWritten.fulfill()
 
@@ -63,21 +63,21 @@ class LoggingTests: XCTestCase {
     func testMultipleBackends() {
         let log1Written = expectation(description: "log written to string 1")
         let log2Written = expectation(description: "log written to string 2")
-        let backend1 = StringBackend()
-        let backend2 = StringBackend()
+        let destination1 = StringDestination()
+        let destination2 = StringDestination()
 
         let formatter = getDateFormatter()
         Loki.dateFormatter = formatter
-        Loki.addBackend(backend1)
-        Loki.addBackend(backend2)
+        Loki.addDestination(destination1)
+        Loki.addDestination(destination2)
         Loki.error("Hi")
         let line = #line
 
         let date = formatter.string(from: Date())
         let finalString = "[\(date)] [ERROR] [:LoggingTests.swift:\(line - 1) testMultipleBackends()] Hi"
-        XCTAssertEqual(backend1.string, finalString)
+        XCTAssertEqual(destination1.string, finalString)
         log1Written.fulfill()
-        XCTAssertEqual(backend1.string, finalString)
+        XCTAssertEqual(destination1.string, finalString)
         log2Written.fulfill()
 
         waitForExpectations(timeout: 2) { error in
@@ -91,11 +91,11 @@ class LoggingTests: XCTestCase {
 
     func testDisable() {
         let logFail = expectation(description: "log not written")
-        let backend = StringBackend()
-        Loki.addBackend(backend)
+        let destination = StringDestination()
+        Loki.addDestination(destination)
         Loki.logLevel = .none
         Loki.error("Hi")
-        XCTAssertEqual(backend.string, "")
+        XCTAssertEqual(destination.string, "")
         logFail.fulfill()
 
         waitForExpectations(timeout: 2) { error in
@@ -106,11 +106,11 @@ class LoggingTests: XCTestCase {
     func testLevelMismatch() {
         let logFail = expectation(description: "log not written")
         let logWritten = expectation(description: "log written")
-        let backend = StringBackend()
-        Loki.addBackend(backend)
+        let destination = StringDestination()
+        Loki.addDestination(destination)
         Loki.logLevel = .error
         Loki.info("Hi")
-        XCTAssertEqual(backend.string, "")
+        XCTAssertEqual(destination.string, "")
         logFail.fulfill()
 
         let formatter = getDateFormatter()
@@ -121,7 +121,7 @@ class LoggingTests: XCTestCase {
 
         let date = formatter.string(from: Date())
         let finalString = "[\(date)] [VERBOSE] [:LoggingTests.swift:\(line - 1) testLevelMismatch()] Hello"
-        XCTAssertEqual(backend.string, finalString)
+        XCTAssertEqual(destination.string, finalString)
         logWritten.fulfill()
 
         waitForExpectations(timeout: 2) { error in
@@ -133,9 +133,9 @@ class LoggingTests: XCTestCase {
         let levels: [LogLevel] = [.debug, .verbose, .info, .warn, .error]
         for level in levels {
             for sublevel in levels {
-                Loki.backends = []
-                let backend = StringBackend()
-                Loki.addBackend(backend)
+                Loki.destinations = []
+                let destination = StringDestination()
+                Loki.addDestination(destination)
                 Loki.logLevel = level
                 let formatter = getDateFormatter()
                 Loki.dateFormatter = formatter
@@ -145,9 +145,9 @@ class LoggingTests: XCTestCase {
                 if level.rawValue <= sublevel.rawValue {
                     let date = formatter.string(from: Date())
                     let finalString = "[\(date)] [\(sublevel)] [:LoggingTests.swift:\(line - 1) testSubLevels()] Hi"
-                    XCTAssertEqual(backend.string, finalString)
+                    XCTAssertEqual(destination.string, finalString)
                 } else {
-                    XCTAssertEqual(backend.string, "")
+                    XCTAssertEqual(destination.string, "")
                 }
             }
         }

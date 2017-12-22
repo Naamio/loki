@@ -6,7 +6,7 @@ public class Loki {
     /// Default formatter.
     public static var dateFormatter = Loki.getDateFormatter()
     /// Backends used by the logger
-    public static var backends = [LokiBackend]()
+    public static var destinations = [BaseDestination]()
     /// Level of logging output.
     public static var logLevel = LogLevel.info
     /// Dispatch queue to which logging should be done async
@@ -21,33 +21,33 @@ public class Loki {
         return formatter
     }
 
-    /// Add a configured backend to this logger.
-    public static func addBackend(_ backend: LokiBackend) {
-        Loki.backends.append(backend)
+    /// Add a configured destination to this logger.
+    public static func addDestination(_ destination: BaseDestination) {
+        Loki.destinations.append(destination)
     }
 
     /// Check whether we're logging the given level
-    /// (also checks whether we have any available backends).
+    /// (also checks whether we have any available destinations).
     public static func isLogging(_ level: LogLevel) -> Bool {
-        if Loki.backends.isEmpty || Loki.logLevel == .none {
+        if Loki.destinations.isEmpty || Loki.logLevel == .none {
             return false
         }
 
         return Loki.logLevel.rawValue <= level.rawValue
     }
 
-    /// Pass the log message unit to the configured backends.
+    /// Pass the log message unit to the configured destinations.
     /// (also takes care of async logging)
     public static func logToBackend(_ log: LogMessage) {
         if let queue = Loki.dispatchQueue {
             queue.async {
-                for backend in Loki.backends {
-                    backend.writeLog(log)
+                for destination in Loki.destinations {
+                    destination.writeLog(log)
                 }
             }
         } else {
-            for backend in Loki.backends {
-                backend.writeLog(log)
+            for destination in Loki.destinations {
+                destination.writeLog(log)
             }
         }
     }
