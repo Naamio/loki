@@ -4,7 +4,7 @@ import SwiftyRequest
 import Loki
 
 /// HTTP destination for sending messages to another server.
-public class HttpDestination {
+public class HTTPDestination {
     let hostUrl: String
     public var hostAuth: String? = nil
 
@@ -13,7 +13,7 @@ public class HttpDestination {
     }
 }
 
-extension HttpDestination: BaseDestination {
+extension HTTPDestination: BaseDestination {
     public func writeLog(_ logData: LogMessage) {
         let request = RestRequest(method: .post, url: hostUrl)
         let jsonData = try! JSONEncoder().encode(logData)
