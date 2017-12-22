@@ -63,7 +63,7 @@ public class Loki {
         }
 
         let date = dateFormatter.string(from: Date())
-        let fileName = NSURL(fileURLWithPath: filePath).lastPathComponent!
+        let fileName = URL(fileURLWithPath: filePath).lastPathComponent
         let log = LogMessage(source: sourceName, date: date, level: level, text: msg,
                              fileName: fileName, line: lineNum, function: functionName)
         Loki.logToBackend(log)
