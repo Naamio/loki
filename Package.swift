@@ -35,6 +35,9 @@ let package = Package(
             dependencies: ["LokiCollector"]),
         .testTarget(
             name: "LokiTests",
+            dependencies: ["Loki", "LokiCollector"]),
+        .testTarget(
+            name: "LokiHTTPTests",
             dependencies: ["Loki", "LokiCollector", "LokiHttp"]),
     ]
 )

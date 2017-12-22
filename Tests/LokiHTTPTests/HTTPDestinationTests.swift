@@ -19,7 +19,7 @@ class TestDestination: BaseDestination {
     }
 }
 
-class HttpDestinationTests: XCTestCase {
+class HTTPDestinationTests: XCTestCase {
     static var allTests = [
         ("testServerLogging", testServerLogging),
         ("testClientLogging", testClientLogging),
@@ -97,7 +97,7 @@ class HttpDestinationTests: XCTestCase {
         Kitura.addHTTPServer(onPort: 8000, with: router)
         Kitura.start()
 
-        let httpClient = HttpDestination(url: "http://0.0.0.0:8000")
+        let httpClient = HTTPDestination(url: "http://0.0.0.0:8000")
         Loki.addDestination(httpClient)
         Loki.info("Hola!")
 
@@ -146,7 +146,7 @@ class HttpDestinationTests: XCTestCase {
         Kitura.addHTTPServer(onPort: 8000, with: router)
         Kitura.start()
 
-        let httpClient = HttpDestination(url: "http://0.0.0.0:8000")
+        let httpClient = HTTPDestination(url: "http://0.0.0.0:8000")
         httpClient.hostAuth = "foobar"
         Loki.addDestination(httpClient)
         Loki.info("Boo!")

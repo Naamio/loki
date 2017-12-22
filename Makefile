@@ -1,4 +1,4 @@
-CONTAINER_URL = naamio/loki:0.2
+CONTAINER_URL = naamio/loki:0.0
 CONTAINER_NAME = loki
 
 clean:
