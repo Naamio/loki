@@ -9,7 +9,7 @@ public struct LogMessage: Codable {
     /// Log message
     public let text: String
     /// Final component (file name) of the source from which this log originated.
-    public let fileName: String
+    public let file: String
     /// Line number from which this log originated.
     public let line: Int
     /// Function which emitted this log.
@@ -19,6 +19,6 @@ public struct LogMessage: Codable {
 extension LogMessage {
     /// Convert this log unit into a human-readable line.
     public func toString() -> String {
-        return "[\(date)] [\(level)] [\(source):\(fileName):\(line) \(function)] \(text)"
+        return "[\(date)] [\(level)] [\(source):\(file):\(line) \(function)] \(text)"
     }
 }
