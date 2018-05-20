@@ -4,7 +4,7 @@
 [![macOS](https://img.shields.io/badge/os-macOS-green.svg?style=flat)]()
 [![Linux](https://img.shields.io/badge/os-linux-green.svg?style=flat)]()
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat)](https://opensource.org/licenses/MIT)
-[![Twitter: @omnijarstudio](https://img.shields.io/badge/contact-@omnijarstudio-blue.svg?style=flat)](https://twitter.com/omnijarstudio)
+[![Twitter: @hellonaamio](https://img.shields.io/badge/contact-@hellonaamio-blue.svg?style=flat)](https://twitter.com/hellonaamio)
 
 **Loki** is a generic logging library for Swift applications. It supports asynchronous logging, 
 multiple destinations and also offers some default destination for logging.
@@ -17,17 +17,14 @@ You can import and use it like so,
 import Loki
 
 Loki.sourceName = "Foobar"  // Name of the app (optional)
-Loki.logLevel = .info       // default (supports 4 other levels)
 
-let console = ConsoleDestination()      // define console destination (stdout)
+let console = ConsoleDestination()  // define console destination (stdout)
+console.logLevle = .info            // default (supports 4 other levels)
 Loki.addDestination(console)
 
-if let file = FileDestination(inPath: "/tmp/foo.log") {
-    Loki.addDestination(file)   // log to file
-}
-
-let queue = DispatchQueue(label: "logging", qos: .utility)
-Loki.dispatchQueue = queue          // queue for async logging
+let file = FileDestination()
+Loki.url = URL(fileWithURLPath: "/tmp/foo.log")
+Loki.addDestination(file)   // log to file
 
 // Now you can log stuff
 Loki.info("Hola!")
@@ -36,7 +33,7 @@ Loki.info("Hola!")
 This logs something like below in console and the file,
 
 ```
-[1970-01-01T00:00:01.000Z] [INFO] [:main.swift:20 testing] Hola!
+INFO: Hola!
 ```
 
 ### Global logging
@@ -60,7 +57,7 @@ import Loki
 
 let console = ConsoleDestination()
 Loki.addDestination(console)
-Loki.logLevel = .info   // filter log messages on the server end
+console.logLevel = .info   // filter log messages on the server end
 
 // Spin up the server with an (optional) authorization check.
 LokiCollector.start(listenPort: 8000, authorizeWith: "foobar")
@@ -80,5 +77,5 @@ Loki.error("Whee!")
 This logs something like below in the service console,
 
 ```
-[1970-01-01T00:00:01.000Z] [ERROR] [:main.swift:10 testing] Whee!
+Error: Whee!
 ```
