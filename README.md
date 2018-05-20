@@ -70,7 +70,7 @@ Assuming the service address is `1.2.3.4`, we can now do the following
 in the application.
 
 ``` swift
-let httpClient = HttpDestination(url: "http://1.2.3.4:8000")
+let httpClient = HTTPDestination(url: "http://1.2.3.4:8000")
 httpClient.hostAuth = "foobar"
 Loki.addDestination(httpClient)
 

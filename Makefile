@@ -1,5 +1,5 @@
-CONTAINER_URL = naamio/loki:0.2
-CONTAINER_NAME = loki
+PRODUCT_NAME = loki
+CONTAINER_URL = naamio/${PRODUCT_NAME}:0.0
 
 clean:
 	if	[ -d ".build" ]; then \
@@ -10,15 +10,18 @@ build: clean
 	@echo --- Building
 	swift build
 
-test: build
+test:
 	swift test
+
+test-linux:
+	docker run -v $$(pwd):/tmp/${PRODUCT_NAME} -w /tmp/${PRODUCT_NAME} -it ibmcom/swift-ubuntu:4.1 swift test
 
 run: build
 	@echo --- Invoking executable
-	./.build/debug/Loki
+	./.build/debug/${PRODUCT_NAME}
 
 build-release: clean
-	docker run -v $$(pwd):/tmp/loki -w /tmp/loki -it ibmcom/swift-ubuntu:4.0 swift build -c release -Xcc -fblocks -Xlinker -L/usr/local/lib
+	docker run -v $$(pwd):/tmp/${PRODUCT_NAME} -w /tmp/${PRODUCT_NAME} -it ibmcom/swift-ubuntu:4.0 swift build -c release -Xcc -fblocks -Xlinker -L/usr/local/lib
 
 clean-container:
 

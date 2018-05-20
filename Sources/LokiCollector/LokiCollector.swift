@@ -30,7 +30,7 @@ public class LokiCollector {
             do {
                 let logData = try request.read(as: LogMessage.self)
                 if Loki.isLogging(logData.level) {
-                    Loki.logToBackend(logData)
+                    Loki.send(logData, thread: "", context: nil)
                 }
 
                 response.statusCode = .OK

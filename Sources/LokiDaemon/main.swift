@@ -13,19 +13,13 @@ guard let port = Int(getEnvVariable("LOKI_SERVICE_PORT") ?? "8000") else {
     exit(1)
 }
 
-Loki.logLevel = LogLevel(getEnvVariable("LOG") ?? "INFO") ?? .info
-
 let consoleDestination = ConsoleDestination()
 Loki.addDestination(consoleDestination)     // add destination for logging
 
 if let logPath = getEnvVariable("FILE") {
-    if let file = FileDestination(inPath: logPath) {
-        Loki.dispatchQueue = DispatchQueue(label: "logging", qos: .utility)
-        Loki.addDestination(file)
-    } else {
-        print("Failed to open file for writing")
-        exit(1)
-    }
+    let file = FileDestination() 
+    file.url = URL(fileURLWithPath: logPath)
+    Loki.addDestination(file)
 }
 
 LokiCollector.start(listenPort: port)

@@ -12,29 +12,32 @@ let package = Package(
             name: "Loki",
             targets: ["Loki"]),
         .library(
-            name: "LokiHttp",
-            targets: ["LokiHttp"]),
+            name: "LokiHTTP",
+            targets: ["LokiHTTP"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/IBM-Swift/Kitura.git", from: "2.0.0"),
-        .package(url: "https://github.com/IBM-Swift/SwiftyRequest.git", from: "1.0.0"),
+        .package(url: "https://github.com/IBM-Swift/Kitura", from: "2.3.0"),
+        .package(url: "https://github.com/vapor/crypto", from: "3.1.2")
     ],
     targets: [
         .target(
             name: "Loki",
             dependencies: []),
         .target(
-            name: "LokiHttp",
-            dependencies: ["Loki", "SwiftyRequest", "Kitura"]),
+            name: "LokiHTTP",
+            dependencies: ["Crypto", "Loki", "Kitura"]),
         .target(
             name: "LokiCollector",
-            dependencies: ["Loki", "LokiHttp"]
+            dependencies: ["Loki", "LokiHTTP"]
         ),
         .target(
             name: "LokiDaemon",
             dependencies: ["LokiCollector"]),
         .testTarget(
             name: "LokiTests",
-            dependencies: ["Loki", "LokiCollector", "LokiHttp"]),
+            dependencies: ["Loki", "LokiCollector"]),
+        //.testTarget(
+        //    name: "LokiHTTPTests",
+        //    dependencies: ["Loki", "LokiCollector", "LokiHTTP"]),
     ]
 )
