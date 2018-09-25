@@ -1,4 +1,4 @@
-FROM ibmcom/swift-ubuntu-runtime:4.0
+FROM ibmcom/swift-ubuntu-runtime:4.2
 
 ADD .build/release/ /usr/share/loki/
 
