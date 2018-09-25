@@ -14,14 +14,14 @@ test:
 	swift test
 
 test-linux:
-	docker run -v $$(pwd):/tmp/${PRODUCT_NAME} -w /tmp/${PRODUCT_NAME} -it ibmcom/swift-ubuntu:4.1 swift test
+	docker run -v $$(pwd):/tmp/${PRODUCT_NAME} -w /tmp/${PRODUCT_NAME} -it ibmcom/swift-ubuntu:4.2 swift test
 
 run: build
 	@echo --- Invoking executable
 	./.build/debug/${PRODUCT_NAME}
 
 build-release: clean
-	docker run -v $$(pwd):/tmp/${PRODUCT_NAME} -w /tmp/${PRODUCT_NAME} -it ibmcom/swift-ubuntu:4.0 swift build -c release -Xcc -fblocks -Xlinker -L/usr/local/lib
+	docker run -v $$(pwd):/tmp/${PRODUCT_NAME} -w /tmp/${PRODUCT_NAME} -it ibmcom/swift-ubuntu:4.2 swift build -c release -Xcc -fblocks -Xlinker -L/usr/local/lib
 
 clean-container:
 
